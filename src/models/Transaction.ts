@@ -23,9 +23,14 @@ class Transaction {
   @Column('numeric')
   value: number;
 
-  @ManyToOne(() => Category)
-  @JoinColumn({ name: 'category_id' })
+  @Column()
   category_id: string;
+
+  @ManyToOne(type => Category, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
 
   @CreateDateColumn()
   created_at: Date;
