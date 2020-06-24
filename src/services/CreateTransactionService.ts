@@ -1,5 +1,5 @@
-// import AppError from '../errors/AppError';
 import { getCustomRepository, getRepository } from 'typeorm';
+import AppError from '../errors/AppError';
 import TransactionsRepository from '../repositories/TransactionsRepository';
 import Transaction from '../models/Transaction';
 import Category from '../models/Category';
@@ -35,6 +35,12 @@ class CreateTransactionService {
       });
       await categoryRepo.save(newCategory);
       categoryId = newCategory.id;
+    }
+    if (type === 'outcome') {
+      const balance = await transactionRepo.getBalance();
+      if (balance.total < value) {
+        throw new AppError('Insuficient funds', 400);
+      }
     }
 
     const transaction = transactionRepo.create({
